@@ -55,15 +55,16 @@ proto-update:
 proto-gen:
 	@echo "Generating protobuf files from submodule..."
 	@mkdir -p pb
-	cd submodules/proto && make gen-grpc
-	cp submodules/proto/pb/*.go pb/
+	protoc --go_out=. --go_opt=paths=source_relative \
+		--go-grpc_out=. --go-grpc_opt=paths=source_relative \
+		submodules/proto/user-svc.proto
+	cp submodules/proto/*.pb.go pb/
 	@echo "Protobuf files generated!"
 
 # Clean protobuf files
 proto-clean:
 	@echo "Cleaning protobuf files..."
 	rm -rf pb/*.go
-	cd submodules/proto && make clean
 	@echo "Protobuf files cleaned!"
 
 # Setup proto (update submodule and generate files)
