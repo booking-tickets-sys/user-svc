@@ -1,0 +1,48 @@
+app:
+  name: "user-svc"
+  version: "1.0.0"
+  environment: "development"
+
+server:
+  grpc:
+    port: 9090
+    host: "localhost"
+    graceful_shutdown_timeout: 30s
+
+database:
+  host: "localhost"
+  port: 5432
+  user: "user"
+  password: "password"
+  db_name: "users"
+  ssl_mode: "disable"
+  max_open_conns: 10
+  max_idle_conns: 5
+  conn_max_lifetime: 5m
+
+security:
+  jwt:
+    secret_key: "eW91ci1zdXBlci1zZWNyZXQtand0LWtleS1oZXJlLW1ha2UtaXQtYXQtbGVhc3QtMzItY2hhcmFjdGVycy1sb25n"
+    secret_key_length: 32
+    token_duration: 15m
+    issuer: "ed-demo-app"
+    # For production, use environment variables:
+    # secret_key: ${JWT_SECRET_KEY}
+
+  paseto:
+    secret_key: "your-super-secret-paseto-key-here-make-it-at-least-32-characters-long"
+    secret_key_length: 32
+    token_duration: 15m
+    # For production, use environment variables:
+    # secret_key: ${PASETO_SECRET_KEY}
+
+logging:
+  level: "info"  # debug, info, warn, error, fatal, panic
+  format: "json"  # json or text
+  output: "stdout"  # stdout, stderr, or file path
+  file:
+    enabled: false
+    path: "logs/app.log"
+    max_size: 100  # MB
+    max_age: 30    # days
+    max_backups: 10

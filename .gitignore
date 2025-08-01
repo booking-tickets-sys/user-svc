@@ -1,0 +1,238 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Project-specific binaries
+user-svc
+client
+
+# Build artifacts
+bin/
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
+
+# Build directory
+build/
+
+# Generated protobuf files (optional - uncomment if you want to ignore them)
+# pb/
+
+# Generated mock files
+mocks/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Coverage reports
+coverage.out
+coverage.html
+
+# Temporary files
+tmp/
+temp/
+
+# Backup files
+*.bak
+*.backup
+
+# Local configuration files
+config.local.yaml
+config.local.yml
+config.local.json
+config.local.yaml.bak
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Certificate files
+*.pem
+*.key
+*.crt
+*.csr
+
+# JWT test tokens (if any are saved)
+*.jwt
+*.token
+
+# Additional Go-specific files
+# Go build cache
+go.sum.backup
+
+# Go test cache
+go-test-cache/
+
+# Go workspace and module files
+go.work.sum
+
+# Air live reload
+tmp/
+
+# Development tools
+.air.toml
+
+# Migration files (if you want to ignore them)
+# db/migrations/*.sql
+
+# Docker
+.dockerignore
+
+# Local development files
+local/
+dev/
+
+# Test output and artifacts
+test-output/
+test-results/
+
+# Test coverage reports
+coverage/
+*.coverage
+
+# Test data
+testdata/
+test_data/
+
+# Test scripts
+test_*.sh
+
+# Profiling data
+*.prof
+*.pprof
+
+# Benchmark results
+benchmark_results.txt
+*.bench
+
+# Temporary and cache files
+*.tmp
+*.temp
+*.cache
+*.pid
+
+# Local secrets
+secrets/
+.secrets
+
+# Migration lock files
+migrate.lock
+
+# Local database dumps
+*.dump
+*.sql.dump
+*.sql.gz
+
+# IDE specific
+*.iml
+.project
+.classpath
+.settings/
+
+# macOS
+.AppleDouble
+.LSOverride
+
+# Windows
+*.lnk
+
+# Linux
+*~
+
+# Node.js (if using any frontend tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Generated protobuf files in submodules
+submodules/pb/
+# Note: submodules/proto/ should NOT be ignored as it's a tracked submodule
+
+# Python (if using any Python scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Java (if using any Java tools)
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+hs_err_pid*
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.lai
+*.la
+*.a
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Go binaries
+*.bin
+
+# Go module cache
+go.sum.backup
+go.mod.backup
+
+# Go vendor directory
+vendor/
+

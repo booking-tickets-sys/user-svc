@@ -1,0 +1,3 @@
+[submodule "submodules/proto"]
+	path = submodules/proto
+	url = https://github.com/booking-tickets-sys/proto.git
