@@ -1,11 +1,12 @@
 # User Service
 
-A production-ready gRPC-based user authentication service with comprehensive testing, graceful shutdown, and modern Go practices.
+A production-ready gRPC-based user authentication service with comprehensive testing, graceful shutdown, refresh token management, and modern Go practices.
 
 ## 🚀 Features
 
 - **User Authentication**: Registration and login with email/password
 - **Token Management**: JWT and PASETO token support with refresh tokens
+- **Refresh Token Operations**: Token refresh, revocation, and cleanup functionality
 - **Database**: PostgreSQL with transaction support and migrations
 - **gRPC API**: Full gRPC implementation with reflection enabled
 - **Testing**: Comprehensive unit tests with mocked dependencies
@@ -14,6 +15,7 @@ A production-ready gRPC-based user authentication service with comprehensive tes
 - **Graceful Shutdown**: Proper service shutdown handling
 - **Error Handling**: Standardized gRPC error responses
 - **Security**: Password hashing, token validation, and secure defaults
+- **Transaction Management**: Database transaction support for data consistency
 
 ## 📋 Prerequisites
 
@@ -74,14 +76,14 @@ app:
 server:
   grpc:
     port: 9090
-    host: "localhost"
+    host: "0.0.0.0"
     graceful_shutdown_timeout: 30s
 
 database:
-  host: "localhost"
+  host: "postgres"
   port: 5432
-  user: "your_db_user"
-  password: "your_db_password"
+  user: "user"
+  password: "password"
   db_name: "users"
   ssl_mode: "disable"
   max_open_conns: 10
@@ -91,17 +93,25 @@ database:
 security:
   jwt:
     secret_key: "your-base64-encoded-jwt-secret"
+    secret_key_length: 32
     token_duration: 15m
     issuer: "user-svc"
   
   paseto:
     secret_key: "your-paseto-secret-key"
+    secret_key_length: 32
     token_duration: 15m
 
 logging:
   level: "info"
   format: "json"
   output: "stdout"
+  file:
+    enabled: false
+    path: "logs/app.log"
+    max_size: 100
+    max_age: 30
+    max_backups: 10
 ```
 
 ### Environment Variables
@@ -137,7 +147,7 @@ make build
 ./bin/user-svc -config=config.prod.yaml
 ```
 
-The gRPC server will start on `localhost:9090`.
+The gRPC server will start on `0.0.0.0:9090`.
 
 ## 📚 API Documentation
 
@@ -168,7 +178,8 @@ rpc Register(RegisterRequest) returns (RegisterResponse)
     "created_at": "2024-01-01T00:00:00Z",
     "updated_at": "2024-01-01T00:00:00Z"
   },
-  "access_token": "jwt_token_here"
+  "access_token": "jwt_token_here",
+  "refresh_token": "refresh_token_here"
 }
 ```
 
@@ -196,7 +207,90 @@ rpc Login(LoginRequest) returns (LoginResponse)
     "created_at": "2024-01-01T00:00:00Z",
     "updated_at": "2024-01-01T00:00:00Z"
   },
-  "access_token": "jwt_token_here"
+  "access_token": "jwt_token_here",
+  "refresh_token": "refresh_token_here"
+}
+```
+
+#### Refresh Token
+
+```protobuf
+rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse)
+```
+
+**Request:**
+```json
+{
+  "refresh_token": "refresh_token_here"
+}
+```
+
+**Response:**
+```json
+{
+  "access_token": "new_jwt_token_here"
+}
+```
+
+#### Revoke Token
+
+```protobuf
+rpc RevokeToken(RevokeTokenRequest) returns (RevokeTokenResponse)
+```
+
+**Request:**
+```json
+{
+  "refresh_token": "refresh_token_here"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Token revoked successfully"
+}
+```
+
+#### Revoke All User Tokens
+
+```protobuf
+rpc RevokeAllUserTokens(RevokeAllUserTokensRequest) returns (RevokeAllUserTokensResponse)
+```
+
+**Request:**
+```json
+{
+  "user_id": "user_uuid_here"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "All tokens revoked successfully"
+}
+```
+
+#### Cleanup Expired Tokens
+
+```protobuf
+rpc CleanupExpiredTokens(CleanupExpiredTokensRequest) returns (CleanupExpiredTokensResponse)
+```
+
+**Request:**
+```json
+{}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Cleanup completed successfully",
+  "tokens_removed": 42
 }
 ```
 
@@ -264,6 +358,11 @@ grpcurl -plaintext -d '{
   "username": "testuser", 
   "password": "password123"
 }' localhost:9090 user.UserService/Register
+
+# Call refresh token method
+grpcurl -plaintext -d '{
+  "refresh_token": "your_refresh_token_here"
+}' localhost:9090 user.UserService/RefreshToken
 ```
 
 ### Protocol Buffer Development
@@ -283,7 +382,6 @@ make proto-clean
 
 ```
 user-svc/
-├── cmd/                    # Application entry points (future)
 ├── config/                 # Configuration management
 │   ├── config.go          # Configuration structs
 │   └── config_test.go     # Configuration tests
@@ -292,6 +390,12 @@ user-svc/
 │   ├── connection_test.go # Connection tests
 │   └── migrations/        # Database migrations
 ├── docs/                   # Documentation
+│   ├── GRACEFUL_SHUTDOWN.md
+│   ├── GRPC_ERROR_HANDLING.md
+│   ├── GRPC_REFRESH_TOKEN_SERVICE.md
+│   ├── GRPC_TESTING.md
+│   ├── REFRESH_TOKEN_IMPLEMENTATION.md
+│   └── RPC_ERROR_MAPPING_AUDIT.md
 ├── internal/               # Private application code
 │   ├── app/               # Application layer
 │   │   ├── grpc/          # gRPC server implementation
@@ -307,6 +411,7 @@ user-svc/
 │   └── proto/             # Protocol buffer definitions
 ├── token/                  # Token management (JWT/PASETO)
 ├── utils/                  # Utility functions
+│   └── tx/                # Transaction management
 ├── config.yaml            # Configuration file
 ├── Dockerfile             # Container configuration
 ├── go.mod                 # Go module definition
@@ -353,10 +458,12 @@ make proto-setup   # Setup proto submodule and generate files
 ## 🔒 Security Features
 
 - **Password Hashing**: Bcrypt with configurable cost
-- **Token Security**: JWT and PASETO token support
+- **Token Security**: JWT and PASETO token support with refresh tokens
 - **Input Validation**: Comprehensive validation for all inputs
 - **Error Handling**: Secure error responses without information leakage
 - **Configuration Security**: Environment variable support for secrets
+- **Token Revocation**: Ability to revoke individual or all user tokens
+- **Token Cleanup**: Automatic cleanup of expired refresh tokens
 
 ## 🚨 Error Handling
 
@@ -365,8 +472,9 @@ The service returns standardized gRPC status codes:
 - `INVALID_ARGUMENT`: Missing required fields or invalid input
 - `INTERNAL`: Server errors
 - `ALREADY_EXISTS`: User already exists (registration)
-- `UNAUTHENTICATED`: Invalid credentials (login)
+- `UNAUTHENTICATED`: Invalid credentials (login) or invalid refresh token
 - `NOT_FOUND`: User not found
+- `PERMISSION_DENIED`: Insufficient permissions for token operations
 
 ## 📊 Monitoring & Logging
 
@@ -394,6 +502,17 @@ server:
   grpc:
     graceful_shutdown_timeout: 30s
 ```
+
+## 📖 Additional Documentation
+
+For detailed information about specific features, see the documentation in the `docs/` directory:
+
+- **GRACEFUL_SHUTDOWN.md**: Detailed graceful shutdown implementation
+- **GRPC_ERROR_HANDLING.md**: Comprehensive error handling guide
+- **GRPC_REFRESH_TOKEN_SERVICE.md**: Refresh token service documentation
+- **GRPC_TESTING.md**: Testing strategies and examples
+- **REFRESH_TOKEN_IMPLEMENTATION.md**: Refresh token implementation details
+- **RPC_ERROR_MAPPING_AUDIT.md**: Error mapping audit and standards
 
 ## 🤝 Contributing
 
