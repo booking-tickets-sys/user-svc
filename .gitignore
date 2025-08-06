@@ -1,16 +1,15 @@
+# User Service - .gitignore
+
+# =============================================================================
+# Go-specific ignores
+# =============================================================================
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
-
-# Project-specific binaries
-user-svc
-client
-
-# Build artifacts
-bin/
 
 # Test binary, built with `go test -c`
 *.test
@@ -23,30 +22,79 @@ bin/
 
 # Go workspace file
 go.work
+go.work.sum
 
-# Build directory
+# Build directories
+bin/
 build/
+dist/
 
+# Go build cache
+go-build/
 
+# Go module cache
+go.sum.backup
+go.mod.backup
 
-# Test script temporary files
-test-*.log
-*.test.log
+# Go test cache
+go-test-cache/
 
-# Generated protobuf files (optional - uncomment if you want to ignore them)
-# pb/
+# =============================================================================
+# Project-specific binaries
+# =============================================================================
 
-# Generated mock files
-mocks/
+# Service binaries
+user-svc
+user-svc-api
+client
 
-# IDE and editor files
-.vscode/
+# =============================================================================
+# IDE and Editor files
+# =============================================================================
+
+# IntelliJ IDEA
 .idea/
+*.iml
+*.ipr
+*.iws
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Vim
 *.swp
 *.swo
 *~
 
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# NetBeans
+nbproject/
+build.xml
+
+# =============================================================================
 # OS generated files
+# =============================================================================
+
+# macOS
 .DS_Store
 .DS_Store?
 ._*
@@ -54,84 +102,118 @@ mocks/
 .Trashes
 ehthumbs.db
 Thumbs.db
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# =============================================================================
+# Logs and temporary files
+# =============================================================================
 
 # Logs
 *.log
 logs/
+log/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+*.cache
+*.pid
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# =============================================================================
+# Environment and configuration files
+# =============================================================================
 
 # Environment variables
 .env
 .env.local
 .env.*.local
-
-# Coverage reports
-coverage.out
-coverage.html
-
-# Temporary files
-tmp/
-temp/
-
-# Backup files
-*.bak
-*.backup
+.env.development
+.env.test
+.env.production
 
 # Local configuration files
 config.local.yaml
 config.local.yml
 config.local.json
 config.local.yaml.bak
+config.local.yml.bak
+config.local.json.bak
 
+# Secrets
+secrets/
+.secrets
+*.key
+*.pem
+*.crt
+*.csr
+*.p12
+*.pfx
+
+# =============================================================================
 # Database files
+# =============================================================================
+
+# SQLite
 *.db
 *.sqlite
 *.sqlite3
 
-# Certificate files
-*.pem
-*.key
-*.crt
-*.csr
+# Database dumps
+*.dump
+*.sql.dump
+*.sql.gz
+*.sql.bz2
 
-# JWT test tokens (if any are saved)
-*.jwt
-*.token
-
-# Additional Go-specific files
-# Go build cache
-go.sum.backup
-
-# Go test cache
-go-test-cache/
-
-# Go workspace and module files
-go.work.sum
-
-
+# Migration lock files
+migrate.lock
 
 # Migration files (if you want to ignore them)
 # db/migrations/*.sql
 
-# Docker
-.dockerignore
+# =============================================================================
+# Testing and coverage
+# =============================================================================
 
-# Local development files
-local/
-dev/
+# Coverage reports
+coverage.out
+coverage.html
+coverage/
+*.coverage
+*.cover
 
 # Test output and artifacts
 test-output/
 test-results/
-
-# Test coverage reports
-coverage/
-*.coverage
+test-*.log
+*.test.log
 
 # Test data
 testdata/
 test_data/
 
-# Test scripts
+# Test scripts (if they contain sensitive data)
 test_*.sh
 
 # Profiling data
@@ -142,51 +224,155 @@ test_*.sh
 benchmark_results.txt
 *.bench
 
-# Temporary and cache files
-*.tmp
-*.temp
-*.cache
-*.pid
+# =============================================================================
+# Generated files
+# =============================================================================
 
-# Local secrets
-secrets/
-.secrets
+# Generated protobuf files (optional - uncomment if you want to ignore them)
+# api/proto/
+# pb/
 
-# Migration lock files
-migrate.lock
+# Generated mock files
+mocks/
 
-# Local database dumps
-*.dump
-*.sql.dump
-*.sql.gz
+# Generated documentation
+docs/build/
+docs/_build/
 
-# IDE specific
-*.iml
-.project
-.classpath
-.settings/
+# =============================================================================
+# Docker and containerization
+# =============================================================================
 
-# macOS
-.AppleDouble
-.LSOverride
+# Docker
+.dockerignore
+Dockerfile.local
+docker-compose.override.yml
+docker-compose.local.yml
 
-# Windows
-*.lnk
+# Container images
+*.tar
+*.tar.gz
+*.tar.bz2
 
-# Linux
-*~
+# =============================================================================
+# Local development files
+# =============================================================================
 
-# Node.js (if using any frontend tools)
+# Local development directories
+local/
+dev/
+development/
+
+# Local database files
+data/
+*.sqlite
+*.db
+
+# Local certificates
+certs/
+certificates/
+
+# =============================================================================
+# JWT and token files
+# =============================================================================
+
+# JWT test tokens (if any are saved)
+*.jwt
+*.token
+tokens/
+
+# =============================================================================
+# Monitoring and profiling
+# =============================================================================
+
+# Prometheus data
+prometheus_data/
+
+# Grafana data
+grafana_data/
+
+# Jaeger data
+jaeger_data/
+
+# =============================================================================
+# CI/CD artifacts
+# =============================================================================
+
+# GitHub Actions
+.github/workflows/.env
+
+# GitLab CI
+.gitlab-ci.yml.local
+
+# Jenkins
+.jenkins/
+
+# =============================================================================
+# Performance and monitoring files
+# =============================================================================
+
+# Performance profiles
+*.prof
+*.pprof
+
+# Memory dumps
+*.hprof
+
+# Core dumps
+core.*
+core
+
+# =============================================================================
+# Local development overrides
+# =============================================================================
+
+# Local overrides for docker-compose
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Local development scripts
+scripts/local/
+scripts/dev/
+
+# =============================================================================
+# Security and compliance
+# =============================================================================
+
+# Security scan results
+security-scan-results/
+*.security
+
+# Compliance reports
+compliance/
+*.compliance
+
+# =============================================================================
+# Backup and recovery
+# =============================================================================
+
+# Backup directories
+backup/
+backups/
+
+# Recovery files
+recovery/
+*.recovery
+
+# =============================================================================
+# Node.js (if using any frontend tools or scripts)
+# =============================================================================
+
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.npm
+.yarn-integrity
 
-# Generated protobuf files in submodules
-submodules/pb/
-# Note: submodules/proto/ should NOT be ignored as it's a tracked submodule
-
+# =============================================================================
 # Python (if using any Python scripts)
+# =============================================================================
+
 __pycache__/
 *.py[cod]
 *$py.class
@@ -197,8 +383,12 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.pytest_cache/
 
+# =============================================================================
 # Java (if using any Java tools)
+# =============================================================================
+
 *.class
 *.jar
 *.war
@@ -207,6 +397,10 @@ venv.bak/
 *.tar.gz
 *.rar
 hs_err_pid*
+
+# =============================================================================
+# Compiled files
+# =============================================================================
 
 # Compiled Object files
 *.slo
@@ -227,14 +421,17 @@ hs_err_pid*
 *.exe
 *.out
 *.app
-
-# Go binaries
 *.bin
 
-# Go module cache
-go.sum.backup
-go.mod.backup
+# =============================================================================
+# Submodule specific ignores
+# =============================================================================
 
-# Go vendor directory
-vendor/
+# Generated protobuf files in submodules (if any)
+submodules/pb/
+# Note: submodules/proto/ should NOT be ignored as it's a tracked submodule
+
+# =============================================================================
+# End of .gitignore
+# =============================================================================
 
